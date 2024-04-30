@@ -52,7 +52,7 @@ func FindOldestMan(fileName string) (int, error) {
 
 	lines := strings.Split(string(file), "\n")
 
-	peopleCount, err := strconv.Atoi(lines[0]) // почему можно иметь 2 переменых err на одном уровне
+	peopleCount, err := strconv.Atoi(lines[0])
 	if err != nil {
 		return 0, err
 	}
@@ -66,7 +66,7 @@ func FindOldestMan(fileName string) (int, error) {
 			continue
 		}
 
-		age, err := strconv.Atoi(person[0]) // можно ли как-то person[0] привести к uint8
+		age, err := strconv.Atoi(person[0])
 		if err != nil {
 			return 0, err
 		}
@@ -116,26 +116,22 @@ func RoundEulersNumber(n int) string {
 		return "3"
 	}
 
-	rounded := make([]byte, 0, len(e)-2) // сюда помещаем n+1 знаков после запятой
-	for i := 0; i < 2+n+1; i++ {
-		if i <= 1 {
-			continue
-		}
-
-		rounded = append(rounded, e[i])
-	}
-
 	intPartStr := "2."
-	toRoundStr := string(rounded[:len(rounded)-1]) // оставляем n знаков после запятой
-	last := string(rounded[len(rounded)-1])        // на осоновании последней цифры решаем делать ли округление в большую сторону
-	if last < "5" {
+	toRoundStr := e[2 : n+2] // n знаков после запятой
+	extraDigit := e[n+2]     // сюда помещаем следующий символ после n знаков после запятой (то есть символ на n+1 позиции после запятой)
+	// на основании этой цифры решаем делать ли округление в большую сторону
+	if string(extraDigit) < "5" {
 		return intPartStr + toRoundStr
 	}
 
-	toPlusNumber, _ := strconv.ParseInt(toRoundStr, 10, 64)
-	roundedNumber := int(toPlusNumber + 1)
+	lastDigitNum, _ := strconv.Atoi(string(e[n+1])) // n_th digit
+	toReplace := lastDigitNum + 1
+	rationalPartStr := toRoundStr[:len(toRoundStr)-1]
+	if lastDigitNum == 9 {
+		toReplace = 0
+	}
 
-	return intPartStr + strconv.Itoa(roundedNumber)
+	return intPartStr + rationalPartStr + strconv.Itoa(toReplace)
 }
 
 /* 5. https://leetcode.com/problems/two-sum/
@@ -159,18 +155,17 @@ func TwoSum(nums []int, target int) []int {
 * O(n), O(1)
  */
 func RemoveDuplicates(arr []int) int {
-	i, k := 0, 1
+	i := 0
 
 	for j := 0; j < len(arr); j++ {
 		if arr[j] == arr[i] {
 			continue
 		}
 		arr[i+1], arr[j] = arr[j], arr[i+1]
-		k++
 		i++
 	}
 
-	return k
+	return i + 1
 }
 
 /*
@@ -178,20 +173,17 @@ func RemoveDuplicates(arr []int) int {
 * O(n), O(1)
 */
 func RemoveElement(arr []int, val int) int {
-	i, j, k := 0, 0, 0
-	for j < len(arr) {
+	i := 0
+	for j := 0; j < len(arr); j++ {
 		if arr[j] == val {
-			j++
 			continue
 		}
 
 		arr[i], arr[j] = arr[j], arr[i]
 		i++
-		j++
-		k++
 	}
 
-	return k
+	return i
 }
 
 /* 8. https://leetcode.com/problems/search-insert-position/
