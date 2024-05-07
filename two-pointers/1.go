@@ -2,7 +2,9 @@ package twopointers
 
 import (
 	"math"
+	"sort"
 	"strings"
+	"unicode"
 )
 
 type ListNode struct {
@@ -49,31 +51,37 @@ func MergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 }
 
 /* 2. https://leetcode.com/problems/two-sum/
-* Не понимаю как сделать через 2 указателя за O(n), были мысли отсортировать чтобы было хотя nlogn, но тогда идексы поменяются
-* O(n^2), O(1)
+* O(nlogn), O(n)
+* Выглядит как будто не очень, но тесты прошли
  */
 func TwoSum(nums []int, target int) []int {
-	for i := 0; i < len(nums)-1; i++ {
-		for j := i + 1; j < len(nums); j++ {
-			if nums[j] == target-nums[i] {
-				return []int{i, j}
-			}
-		}
-	}
-
-	return []int{}
-}
-
-// O(n), O(n)
-func TwoSum2(nums []int, target int) []int {
-	m := map[int]int{}
+	m := map[int][]int{}
 
 	for pos, n := range nums {
-		if v, ok := m[target-n]; ok {
-			return []int{pos, v}
+		m[n] = append(m[n], pos)
+	}
+
+	sort.Ints(nums)
+
+	for i, j := 0, 1; i < len(nums); {
+		if j == len(nums) {
+			i++
+			j = i + 1
 		}
 
-		m[n] = pos
+		if target == nums[i]+nums[j] {
+			if nums[i] == nums[j] {
+				return m[nums[i]]
+			}
+			return []int{m[nums[j]][0], m[nums[i]][0]}
+		}
+
+		if target > nums[i]+nums[j] {
+			j++
+		} else {
+			i++
+			j = i + 1
+		}
 	}
 
 	return []int{}
@@ -85,15 +93,17 @@ func TwoSum2(nums []int, target int) []int {
 
 func SortedSquares(nums []int) []int {
 	i, j := 0, len(nums)-1
+	resIdx := len(nums) - 1
 	res := make([]int, len(nums))
 	for i <= j {
 		if square(nums[j]) > square(nums[i]) {
-			res[j-i] = square(nums[j])
+			res[resIdx] = square(nums[j])
 			j--
 		} else {
-			res[j-i] = square(nums[i])
+			res[resIdx] = square(nums[i])
 			i++
 		}
+		resIdx--
 	}
 
 	return res
@@ -107,21 +117,20 @@ func square(a int) int {
 * O(n), O(1)
  */
 func IsPalindrome(s string) bool {
-	m := createAndFillMap()
 	i, j := 0, len(s)-1
 
 	for i < j {
-		if !isValid(m, string(rune(s[i]))) {
+		if !isValid(rune(s[i])) {
 			i++
 			continue
 		}
 
-		if !isValid(m, string(rune(s[j]))) {
+		if !isValid(rune(s[j])) {
 			j--
 			continue
 		}
 
-		if !strings.EqualFold(string(rune(s[i])), string(rune(s[j]))) { // можно ли как то сравнить символы, чтобы не делать столько преобразований
+		if !equalStringsCaseInsensitive(rune(s[i]), rune(s[j])) {
 			return false
 		}
 
@@ -132,22 +141,12 @@ func IsPalindrome(s string) bool {
 	return true
 }
 
-func isValid(m map[string]struct{}, s string) bool {
-	_, ok := m[strings.ToLower(s)]
-	return ok
+func equalStringsCaseInsensitive(a, b rune) bool {
+	return strings.EqualFold(string(a), string(b))
 }
 
-func createAndFillMap() map[string]struct{} {
-	m := map[string]struct{}{}
-	for i := 'a'; i <= 'z'; i++ {
-		m[string(i)] = struct{}{}
-	}
-
-	for i := '0'; i <= '9'; i++ {
-		m[string(i)] = struct{}{}
-	}
-
-	return m
+func isValid(r rune) bool {
+	return unicode.IsDigit(r) || unicode.IsLetter(r)
 }
 
 /* 5. https://acmp.ru/index.asp?main=task&id_task=869

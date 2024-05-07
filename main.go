@@ -1,5 +1,11 @@
 package main
 
+import (
+	"fmt"
+
+	twopointers "github.com/kayalova/algo-problems/two-pointers"
+)
+
 func main() {
-	// twopointers.MinimalCanoe(135, []int{50, 74, 60, 82})
+	fmt.Println(twopointers.MinimalCanoe(100, []int{90, 90, 90, 30}))
 }
