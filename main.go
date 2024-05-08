@@ -1,8 +1,22 @@
 package main
 
+import (
+	"fmt"
+
+	hashtable "github.com/kayalova/algo-problems/hash-table"
+)
+
 func main() {
-	// fmt.Println(complexity.SalaryDiff())
-	// fmt.Println(complexity.FindOldestMan("complexity/find_oldest_man.txt"))
-	// fmt.Println(complexity.LongestZeroChain("00101110000110"))
-	// fmt.Println(complexity.RoundEulersNumber(4))
+	s := [][]byte{
+		{'5', '3', '.', '.', '7', '.', '.', '.', '.'},
+		{'6', '.', '.', '1', '9', '5', '.', '.', '.'},
+		{'.', '9', '8', '.', '.', '.', '.', '6', '.'},
+		{'8', '.', '.', '.', '6', '.', '.', '.', '3'},
+		{'4', '.', '.', '8', '.', '3', '.', '.', '1'},
+		{'7', '.', '.', '.', '2', '.', '.', '.', '6'},
+		{'.', '6', '.', '.', '.', '.', '2', '8', '.'},
+		{'.', '.', '.', '4', '1', '9', '.', '.', '5'},
+		{'.', '.', '.', '.', '8', '.', '.', '7', '9'},
+	}
+	fmt.Println(hashtable.IsValidSudoku(s))
 }
