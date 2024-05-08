@@ -63,7 +63,7 @@ func IsAnagram(s string, t string) bool {
 }
 
 /* 3. https://leetcode.com/problems/group-anagrams/
-* O(n)?, O(n)
+* O(n^2), O(n) - с учетом сортировки получается n^2?
  */
 func GroupAnagrams(strs []string) [][]string {
 	m := map[string][]string{}
@@ -118,6 +118,36 @@ func LengthOfLongestSubstring(s string) int {
 	return len(longest)
 }
 
+/* 4. https://leetcode.com/problems/longest-substring-without-repeating-characters/
+* Хотела сделать через мапу, но не понимаю как хранить индексы символов текущей подстроки,
+* чтобы потом слева обрезать, начиная с того символа, который встретился на текущей итерации и уже есть в подстроке (current)
+ */
+
+func LengthOfLongestSubstring2(s string) int {
+	m := map[rune]int{}
+	current := []rune{}
+	longest := 0
+
+	for _, r := range s {
+		if idx, ok := m[r]; ok {
+			if len(current) > longest {
+				longest = len(current)
+			}
+
+			current = current[idx+1:]
+		}
+
+		current = append(current, r)
+		m[r] = len(current) - 1
+	}
+
+	if len(current) > longest {
+		longest = len(current)
+	}
+
+	return longest
+}
+
 /* 5. https://leetcode.com/problems/top-k-frequent-elements/
 * O(n), O(n)
 * в описании было следующее замечание
@@ -157,4 +187,69 @@ func TopKFrequent(nums []int, k int) []int {
 	}
 
 	return res
+}
+
+/*
+6. https://leetcode.com/problems/valid-sudoku/
+*/
+func IsValidSudoku(board [][]byte) bool {
+	h := isValidHorizontally(board)
+
+	if !h {
+		return false
+	}
+
+	v := isValidVertically(board)
+
+	divideOnSubBox(board)
+
+	return v
+}
+
+func divideOnSubBox(board [][]byte) [][]byte {
+	res := [][]byte{}
+
+	return res
+}
+
+func isValidVertically(board [][]byte) bool {
+	m := make(map[byte]struct{})
+
+	for i := 0; i < 9; i++ {
+		for j := 0; j < 9; j++ {
+			if board[j][i] == '.' {
+				continue
+			}
+
+			if _, ok := m[board[j][i]]; ok {
+				return false
+			}
+			m[board[j][i]] = struct{}{}
+		}
+		m = make(map[byte]struct{})
+	}
+
+	return true
+}
+
+func isValidHorizontally(board [][]byte) bool {
+	m := make(map[byte]struct{})
+
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < len(board[i]); j++ {
+			if board[i][j] == '.' {
+				continue
+			}
+
+			if _, ok := m[board[i][j]]; ok {
+				return false
+			}
+
+			m[board[i][j]] = struct{}{}
+		}
+
+		m = make(map[byte]struct{})
+	}
+
+	return true
 }
