@@ -148,24 +148,25 @@ func isValid(r rune) bool {
 	return unicode.IsDigit(r) || unicode.IsLetter(r)
 }
 
-/* 5. https://acmp.ru/index.asp?main=task&id_task=869
+/* 5. https://leetcode.com/problems/boats-to-save-people/
 * O(nlogn), O(1)
  */
-func MinimalCanoe(cap int, people []int) int {
-	count, temp := 0, 0
+func NumRescueBoats(people []int, limit int) int {
 	sort.Ints(people)
 
-	for i := 0; i < len(people); i++ {
-		if temp+people[i] < cap {
-			temp += people[i]
-		} else {
-			count += 1
-			temp = people[i]
-		}
-	}
+	count := 0
 
-	if temp != 0 {
-		count += 1
+	for i, j := 0, len(people)-1; i <= j; j-- {
+		if i == j {
+			count++
+			continue
+		}
+
+		if people[i]+people[j] <= limit {
+			i++
+		}
+
+		count++
 	}
 
 	return count
