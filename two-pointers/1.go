@@ -1,7 +1,6 @@
 package twopointers
 
 import (
-	"math"
 	"sort"
 	"strings"
 	"unicode"
@@ -150,13 +149,24 @@ func isValid(r rune) bool {
 }
 
 /* 5. https://acmp.ru/index.asp?main=task&id_task=869
-* O(n), O(1)
+* O(nlogn), O(1)
  */
 func MinimalCanoe(cap int, people []int) int {
-	s := 0
-	for _, p := range people {
-		s += p
+	count, temp := 0, 0
+	sort.Ints(people)
+
+	for i := 0; i < len(people); i++ {
+		if temp+people[i] < cap {
+			temp += people[i]
+		} else {
+			count += 1
+			temp = people[i]
+		}
 	}
 
-	return int(math.Ceil(float64(s) / float64(cap)))
+	if temp != 0 {
+		count += 1
+	}
+
+	return count
 }

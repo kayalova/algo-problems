@@ -7,5 +7,5 @@ import (
 )
 
 func main() {
-	fmt.Println(twopointers.MinimalCanoe(100, []int{90, 90, 90, 30}))
+	fmt.Println(twopointers.MinimalCanoe(135, []int{50, 60, 74, 82}))
 }
