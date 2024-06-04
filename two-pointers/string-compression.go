@@ -2,6 +2,10 @@ package twopointers
 
 import "strconv"
 
+/* https://leetcode.com/problems/string-compression/
+* O(n) по времени,
+* а по памяти из за []byte(strconv.Itoa(j - i))[0] и  strconv.Itoa(j - i) получается O(n)?
+ */
 func Compress(chars []byte) int {
 	indx := 0
 	for i := 0; i < len(chars); {
